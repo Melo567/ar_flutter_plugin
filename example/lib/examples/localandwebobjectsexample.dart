@@ -32,6 +32,7 @@ class _LocalAndWebObjectsWidgetState extends State<LocalAndWebObjectsWidget> {
   ARNode? webObjectNode;
   ARNode? fileSystemNode;
   HttpClient? httpClient;
+  bool _localDuckReady = false;
 
   @override
   void dispose() {
@@ -109,8 +110,11 @@ class _LocalAndWebObjectsWidgetState extends State<LocalAndWebObjectsWidget> {
     //Download model to file system
     httpClient = new HttpClient();
     _downloadFile(
-        "https://github.com/KhronosGroup/glTF-Sample-Models/raw/master/2.0/Duck/glTF-Binary/Duck.glb",
-        "LocalDuck.glb");
+            "https://github.com/KhronosGroup/glTF-Sample-Models/raw/main/2.0/Duck/glTF-Binary/Duck.glb",
+            "LocalDuck.glb")
+        .then((_) {
+      setState(() => _localDuckReady = true);
+    });
     // Alternative to use type fileSystemAppFolderGLTF2:
     //_downloadAndUnpack(
     //    "https://drive.google.com/uc?export=download&id=1fng7yiK0DIR0uem7XkV2nlPSGH9PysUs",
@@ -168,17 +172,21 @@ class _LocalAndWebObjectsWidgetState extends State<LocalAndWebObjectsWidget> {
       this.arObjectManager!.removeNode(this.webObjectNode!);
       this.webObjectNode = null;
     } else {
+      final uri = Platform.isIOS
+          ? "https://developer.apple.com/augmented-reality/quick-look/models/kids-slide/slide.usdz"
+          : "https://github.com/KhronosGroup/glTF-Sample-Models/raw/main/2.0/Duck/glTF-Binary/Duck.glb";
       var newNode = ARNode(
-          type: NodeType.webGLB,
-          uri:
-              "https://github.com/KhronosGroup/glTF-Sample-Models/raw/master/2.0/Duck/glTF-Binary/Duck.glb",
-          scale: Vector3(0.2, 0.2, 0.2));
+          type: NodeType.webGLB, uri: uri, scale: Vector3(0.2, 0.2, 0.2));
       bool? didAddWebNode = await this.arObjectManager!.addNode(newNode);
       this.webObjectNode = (didAddWebNode!) ? newNode : null;
     }
   }
 
   Future<void> onFileSystemObjectAtOriginButtonPressed() async {
+    if (!_localDuckReady) {
+      print("LocalDuck.glb not ready yet, still downloading...");
+      return;
+    }
     if (this.fileSystemNode != null) {
       this.arObjectManager!.removeNode(this.fileSystemNode!);
       this.fileSystemNode = null;

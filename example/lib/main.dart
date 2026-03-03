@@ -1,5 +1,6 @@
 import 'package:ar_flutter_plugin_example/examples/externalmodelmanagementexample.dart';
 import 'package:ar_flutter_plugin_example/examples/objectsonplanesexample.dart';
+import 'package:ar_flutter_plugin_example/ar/presentation/pages/ar_object_placement_page.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -62,9 +63,7 @@ class _MyAppState extends State<MyApp> {
         ),
         body: Column(children: [
           Text('Running on: $_platformVersion\n'),
-          Expanded(
-            child: ExampleList(),
-          ),
+          Expanded(child: ExampleList())
         ]),
       ),
     );
@@ -117,7 +116,14 @@ class ExampleList extends StatelessWidget {
           () => Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => ExternalModelManagementWidget())))
+                  builder: (context) => ExternalModelManagementWidget()))),
+      Example(
+          'AR Objets 3D',
+          'Placez des objets 3D sur des surfaces détectées depuis une API',
+          () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const ArObjectPlacementPage())))
     ];
     return ListView(
       children:

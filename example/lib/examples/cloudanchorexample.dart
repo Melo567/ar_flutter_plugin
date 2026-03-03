@@ -157,8 +157,8 @@ class _CloudAnchorWidgetState extends State<CloudAnchorWidget> {
     this.arAnchorManager!.onAnchorDownloaded = onAnchorDownloaded;
 
     this
-        .arLocationManager
-        !.startLocationUpdates()
+        .arLocationManager!
+        .startLocationUpdates()
         .then((value) => null)
         .onError((error, stackTrace) {
       switch (error.toString()) {
@@ -245,13 +245,15 @@ class _CloudAnchorWidgetState extends State<CloudAnchorWidget> {
         // Add note to anchor
         var newNode = ARNode(
             type: NodeType.webGLB,
-            uri: "https://github.com/KhronosGroup/glTF-Sample-Models/raw/master/2.0/Duck/glTF-Binary/Duck.glb",
+            uri:
+                "https://github.com/KhronosGroup/glTF-Sample-Models/raw/master/2.0/Duck/glTF-Binary/Duck.glb",
             scale: Vector3(0.2, 0.2, 0.2),
             position: Vector3(0.0, 0.0, 0.0),
             rotation: Vector4(1.0, 0.0, 0.0, 0.0),
             data: {"onTapText": "Ouch, that hurt!"});
-        bool? didAddNodeToAnchor =
-            await this.arObjectManager!.addNode(newNode, planeAnchor: newAnchor);
+        bool? didAddNodeToAnchor = await this
+            .arObjectManager!
+            .addNode(newNode, planeAnchor: newAnchor);
         if (didAddNodeToAnchor ?? false) {
           this.nodes.add(newNode);
           setState(() {
@@ -289,15 +291,18 @@ class _CloudAnchorWidgetState extends State<CloudAnchorWidget> {
     this.arSessionManager!.onError("Upload successful");
   }
 
-  ARAnchor onAnchorDownloaded(Map<String, dynamic>serializedAnchor) {
-    final anchor = ARPlaneAnchor.fromJson(anchorsInDownloadProgress[serializedAnchor["cloudanchorid"]] as Map<String, dynamic>);
+  ARAnchor onAnchorDownloaded(Map<String, dynamic> serializedAnchor) {
+    final anchor = ARPlaneAnchor.fromJson(
+        anchorsInDownloadProgress[serializedAnchor["cloudanchorid"]]
+            as Map<String, dynamic>);
     anchorsInDownloadProgress.remove(anchor.cloudanchorid);
     this.anchors.add(anchor);
 
     // Download nodes attached to this anchor
     firebaseManager.getObjectsFromAnchor(anchor, (snapshot) {
       snapshot.docs.forEach((objectDoc) {
-        ARNode object = ARNode.fromMap(objectDoc.data() as Map<String, dynamic>);
+        ARNode object =
+            ARNode.fromMap(objectDoc.data() as Map<String, dynamic>);
         arObjectManager!.addNode(object, planeAnchor: anchor);
         this.nodes.add(object);
       });
@@ -318,7 +323,8 @@ class _CloudAnchorWidgetState extends State<CloudAnchorWidget> {
     if (this.arLocationManager!.currentLocation != null) {
       firebaseManager.downloadAnchorsByLocation((snapshot) {
         final cloudAnchorId = snapshot.get("cloudanchorid");
-        anchorsInDownloadProgress[cloudAnchorId] = snapshot.data() as Map<String, dynamic>;
+        anchorsInDownloadProgress[cloudAnchorId] =
+            snapshot.data() as Map<String, dynamic>;
         arAnchorManager!.downloadAnchor(cloudAnchorId);
       }, this.arLocationManager!.currentLocation, 0.1);
       setState(() {

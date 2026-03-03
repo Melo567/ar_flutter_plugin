@@ -258,7 +258,8 @@ class _ExternalModelManagementWidgetState
   }
 
   Future<void> onNodeTapped(List<String> nodeNames) async {
-    var foregroundNode = nodes.firstWhere((element) => element.name == nodeNames.first);
+    var foregroundNode =
+        nodes.firstWhere((element) => element.name == nodeNames.first);
     this.arSessionManager!.onError(foregroundNode.data!["onTapText"]);
   }
 
@@ -280,8 +281,9 @@ class _ExternalModelManagementWidgetState
             position: VectorMath.Vector3(0.0, 0.0, 0.0),
             rotation: VectorMath.Vector4(1.0, 0.0, 0.0, 0.0),
             data: {"onTapText": "I am a " + this.selectedModel.name});
-        bool? didAddNodeToAnchor =
-            await this.arObjectManager!.addNode(newNode, planeAnchor: newAnchor);
+        bool? didAddNodeToAnchor = await this
+            .arObjectManager!
+            .addNode(newNode, planeAnchor: newAnchor);
         if (didAddNodeToAnchor!) {
           this.nodes.add(newNode);
           setState(() {
@@ -319,15 +321,18 @@ class _ExternalModelManagementWidgetState
     this.arSessionManager!.onError("Upload successful");
   }
 
-  ARAnchor onAnchorDownloaded(Map<String,dynamic> serializedAnchor) {
-    final anchor = ARPlaneAnchor.fromJson(anchorsInDownloadProgress[serializedAnchor["cloudanchorid"]] as Map<String,dynamic>);
+  ARAnchor onAnchorDownloaded(Map<String, dynamic> serializedAnchor) {
+    final anchor = ARPlaneAnchor.fromJson(
+        anchorsInDownloadProgress[serializedAnchor["cloudanchorid"]]
+            as Map<String, dynamic>);
     anchorsInDownloadProgress.remove(anchor.cloudanchorid);
     this.anchors.add(anchor);
 
     // Download nodes attached to this anchor
     firebaseManager.getObjectsFromAnchor(anchor, (snapshot) {
       snapshot.docs.forEach((objectDoc) {
-        ARNode object = ARNode.fromMap(objectDoc.data() as Map<String, dynamic>);
+        ARNode object =
+            ARNode.fromMap(objectDoc.data() as Map<String, dynamic>);
         arObjectManager!.addNode(object, planeAnchor: anchor);
         this.nodes.add(object);
       });
@@ -348,7 +353,8 @@ class _ExternalModelManagementWidgetState
     if (this.arLocationManager!.currentLocation != null) {
       firebaseManager.downloadAnchorsByLocation((snapshot) {
         final cloudAnchorId = snapshot.get("cloudanchorid");
-        anchorsInDownloadProgress[cloudAnchorId] = snapshot.data() as Map<String, dynamic>;
+        anchorsInDownloadProgress[cloudAnchorId] =
+            snapshot.data() as Map<String, dynamic>;
         arAnchorManager!.downloadAnchor(cloudAnchorId);
       }, this.arLocationManager!.currentLocation, 0.1);
       setState(() {

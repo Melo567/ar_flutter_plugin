@@ -167,24 +167,34 @@ class ArModelBuilder: NSObject {
                         try FileManager.default.copyItem(at: fileURL, to: targetURL)
 
                         do {
-                            let sceneSource = GLTFSceneSource(url: targetURL)
-                            let scene = try sceneSource.scene()
+                            let ext = targetURL.pathExtension.lowercased()
+                            if ext == "usdz" {
+                                // USDZ: load natively with SceneKit (no GLTFSceneKit needed)
+                                if let scene = try? SCNScene(url: targetURL, options: nil) {
+                                    for child in scene.rootNode.childNodes {
+                                        node?.addChildNode(child)
+                                    }
+                                    node?.name = name
+                                    if let transform = transformation {
+                                        node?.transform = deserializeMatrix4(transform)
+                                    }
+                                } else {
+                                    node = nil
+                                }
+                            } else {
+                                let sceneSource = GLTFSceneSource(url: targetURL)
+                                let scene = try sceneSource.scene()
 
-                            for child in scene.rootNode.childNodes {
-                                child.scale = SCNVector3(0.01,0.01,0.01) // Compensate for the different model dimension definitions in iOS and Android (meters vs. millimeters)
-                                //child.eulerAngles.z = -.pi // Compensate for the different model coordinate definitions in iOS and Android
-                                //child.eulerAngles.y = -.pi // Compensate for the different model coordinate definitions in iOS and Android
-                                node?.addChildNode(child)
+                                for child in scene.rootNode.childNodes {
+                                    child.scale = SCNVector3(0.01,0.01,0.01)
+                                    node?.addChildNode(child)
+                                }
+
+                                node?.name = name
+                                if let transform = transformation {
+                                    node?.transform = deserializeMatrix4(transform)
+                                }
                             }
-
-                            node?.name = name
-                            if let transform = transformation {
-                                node?.transform = deserializeMatrix4(transform)
-                            }
-                            /*node?.scale = worldScale
-                            node?.position = worldPosition
-                            node?.worldOrientation = worldRotation*/
-
                         } catch {
                             print("\(error.localizedDescription)")
                             node = nil

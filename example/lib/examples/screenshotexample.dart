@@ -38,10 +38,8 @@ class _ScreenshotWidgetState extends State<ScreenshotWidget> {
         appBar: AppBar(
           title: const Text('Screenshots'),
         ),
-        body: 
-        Container(
-            child:
-          Stack(children: [
+        body: Container(
+            child: Stack(children: [
           ARView(
             onARViewCreated: onARViewCreated,
             planeDetectionConfig: PlaneDetectionConfig.horizontalAndVertical,
@@ -88,10 +86,10 @@ class _ScreenshotWidgetState extends State<ScreenshotWidget> {
       this.arObjectManager.removeNode(node);
     });*/
     // anchors.forEach((anchor)
-    for (var anchor in anchors)
-     {
+    for (var anchor in anchors) {
       arAnchorManager!.removeAnchor(anchor);
-    };
+    }
+    ;
     anchors = [];
   }
 
@@ -132,7 +130,7 @@ class _ScreenshotWidgetState extends State<ScreenshotWidget> {
             rotation: Vector4(1.0, 0.0, 0.0, 0.0));
         bool? didAddNodeToAnchor =
             await arObjectManager!.addNode(newNode, planeAnchor: newAnchor);
-        
+
         if (didAddNodeToAnchor != null && didAddNodeToAnchor) {
           nodes.add(newNode);
         } else {

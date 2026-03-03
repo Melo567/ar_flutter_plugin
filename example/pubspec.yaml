@@ -6,7 +6,7 @@ description: Demonstrates how to use the ar_flutter_plugin plugin.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 environment:
-  sdk: ">=2.16.1 <4.0.0"
+  sdk: ">=2.17.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -30,6 +30,9 @@ dependencies:
   geoflutterfire: "^3.0.1"
   path_provider: ^2.0.3
   flutter_archive: ^6.0.4
+  dio: ^5.4.0
+  flutter_bloc: ^8.1.6
+  equatable: ^2.0.5
 
 dev_dependencies:
   flutter_test:
