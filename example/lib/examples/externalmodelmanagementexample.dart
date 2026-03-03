@@ -406,9 +406,9 @@ typedef FirebaseDocumentStreamListener = void Function(
 class FirebaseManager {
   FirebaseFirestore? firestore;
   Geoflutterfire? geo;
-  CollectionReference? anchorCollection;
-  CollectionReference? objectCollection;
-  CollectionReference? modelCollection;
+  CollectionReference<Map<String, dynamic>>? anchorCollection;
+  CollectionReference<Map<String, dynamic>>? objectCollection;
+  CollectionReference<Map<String, dynamic>>? modelCollection;
 
   // Firebase initialization function
   Future<bool> initializeFlutterFire() async {
